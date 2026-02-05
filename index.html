@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Development By Boon</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body, h1, button, canvas {
+            font-family: "Press Start 2P", monospace;
+        }
+
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding: 20px;
+            box-sizing:border-box;
+        }
+
+        canvas#board {
+            background: linear-gradient(180deg, #cfe9ff 0%, #eaffd8 60%);
+            border-radius: 12px;
+            border: 6px solid rgba(255,255,255,0.6);
+            box-shadow: 0 18px 40px rgba(30,60,110,0.12);
+            width: 800px;
+            height: 300px;
+            display:block;
+        }
+
+        button {
+            background: linear-gradient(180deg,#ffd6a5,#ff9f9f);
+            color:#3b1b1b;
+            border:none;
+            border-radius:10px;
+            padding:10px 16px;
+            margin-top:12px;
+            cursor:pointer;
+            box-shadow: 0 8px 20px rgba(255,150,150,0.12);
+        }
+
+        h1 {
+            color:#1f3a6f;
+            margin-bottom:8px;
+        }
+
+        h1 {
+            margin: 0 0 18px 0;
+            font-size: 22px;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            font-weight: 400;
+            text-rendering: geometricPrecision;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translateZ(0);
+        }
+
+        canvas#board {
+            display: block;
+            margin: 12px 0 16px 0;
+            max-width: 100%;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .lives {
+            display:inline-flex;
+            gap:12px;
+            align-items:center;
+            margin-left:12px;
+            vertical-align:middle;
+        }
+        .life {
+            font-size:22px;
+            line-height:1;
+            transition: transform .12s ease, opacity .12s ease;
+            filter: drop-shadow(0 6px 10px rgba(200,30,60,0.12));
+        }
+        .life.empty {
+            opacity:0.28;
+            transform: scale(.92) rotate(-6deg);
+            filter: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mario Runner Game</h1>
+
+    <canvas id="board"></canvas>
+    <br>
+    <button onclick="restartGame(); resetLives(); this.blur();">RESTART</button>
+
+    <script>
+        (function(){
+            const maxLivesDefault = 3;
+            let maxLives = maxLivesDefault;
+            let lives = maxLives;
+            const container = document.getElementById('livesContainer');
+
+            function render() {
+                if (!container) return;
+                container.innerHTML = '';
+                for (let i = 0; i < maxLives; i++) {
+                    const span = document.createElement('span');
+                    if (i < lives) {
+                        span.className = 'life';
+                        span.textContent = '❤️';
+                    } else {
+                        span.className = 'life empty';
+                        span.textContent = '🤍';
+                    }
+                    container.appendChild(span);
+                }
+            }
+
+            window.decrementLife = function(){
+                if (lives <= 0) return 0;
+                lives = Math.max(0, lives - 1);
+                render();
+                if (lives === 0) {
+                    window.dispatchEvent(new Event('gameOver'));
+                }
+                return lives;
+            };
+
+            window.resetLives = function(n){
+                if (typeof n === 'number') {
+                    maxLives = Math.max(1, Math.floor(n));
+                }
+                lives = maxLives;
+                render();
+            };
+
+            window.setLives = function(n){
+                lives = Math.max(0, Math.min(maxLives, Math.floor(n)));
+                render();
+            };
+
+            render();
+
+        })();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
